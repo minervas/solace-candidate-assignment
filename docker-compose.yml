@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:17.5-bullseye
     restart: always
     environment:
       POSTGRES_USER: postgres
