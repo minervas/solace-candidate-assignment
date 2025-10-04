@@ -16,34 +16,38 @@ interface DataTableProps<T> {
 
 export function DataTable<T>({ data, columns, getRowKey, className = '' }: DataTableProps<T>) {
   return (
-    <div className={className}>
-      <table>
-        <thead>
+    <div className={`overflow-x-auto rounded-lg border border-gray-200 shadow-sm ${className}`}>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
           <tr>
             {columns.map((column, index) => (
               <th
                 key={index}
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 {column.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200">
           {/* let the user know when no data is available */}
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length}>
+              <td 
+                colSpan={columns.length}
+                className="px-6 py-8 text-center text-sm text-gray-500 italic"
+              >
                 No data available
               </td>
             </tr>
           ) : (
             data.map((row) => (
-              <tr key={getRowKey(row)}>
+              <tr key={getRowKey(row)} className="hover:bg-gray-50 transition-colors">
                 {columns.map((column, colIndex) => {
                   return (
                     // colIndex should be fine for a key here since columns are static and won't change
-                    <td key={colIndex} >
+                    <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {column.cell(row)}
                     </td>
                   );

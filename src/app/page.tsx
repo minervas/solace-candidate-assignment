@@ -3,6 +3,7 @@
 import { DataTable } from "@/components/DataTable";
 import { StringList } from "@/components/StringList";
 import { Advocate } from "@/db/schema";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { ChangeEvent, useEffect, useState } from "react";
 
 export default function Home() {
@@ -76,7 +77,10 @@ export default function Home() {
             header: "Years of Experience",
             cell: (row) => row.yearsOfExperience,
           },
-          { header: "Phone Number", cell: (row) => row.phoneNumber },
+          { 
+            header: "Phone Number", 
+            cell: (row) => formatPhoneNumber(row.phoneNumber) 
+          },
         ]}
         getRowKey={(row) => row.id}
       />
