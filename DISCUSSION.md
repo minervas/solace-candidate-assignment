@@ -2,6 +2,12 @@
 - consider a more robust way of sharing types between frontend and backend that would make it easier to split them into separate repos
 - consider using a package manager like bun http://bun.com/package-manager for faster, disk efficient, package isolated builds: https://bun.com/docs/install/isolated
 - add a route to let you click in to see a particular advocate's details
+- consider trimming the explanatory (in parenthesis text) from specialties as it takes up a fair amount of visual space
+  - this would have implications for the search though
+- consider showing collapsed specialties in a tool tip
+- I would expect that the number of specialties per person would be reasonably constrained to under 10, but if that's not the case we might need to reconsider how that data is stored an queried
+- consider adding a "fuzzy search" feature https://www.postgresql.org/docs/current/fuzzystrmatch.html
+
 # Note 
 - I'm using vitest instead of jest as I've found that it is faster and more scalable than jest. I believe it is due to how jest handles barrel files https://dev.to/fogel/potential-issues-with-barrel-files-in-jest-1nkl and other issues with jest memory usage https://www.reddit.com/r/typescript/comments/1i8bpii/crazy_jest_memory_usage/
 
