@@ -1,7 +1,5 @@
 import React from 'react';
 
-// Advocate is { id: number; firstName: string; lastName: string; city: string; degree: string; specialties: string[]; yearsOfExperience: number; phoneNumber: number; createdAt: string; }
-// T is Advocate[]
 export interface Column<T> {
   header: string;
   cell: (row: T) => React.ReactNode;

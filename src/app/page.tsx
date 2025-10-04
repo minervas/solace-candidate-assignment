@@ -1,10 +1,12 @@
 "use client";
 
 import { DataTable } from "@/components/DataTable";
+import { SearchBar } from "@/components/SearchBar";
 import { StringList } from "@/components/StringList";
+import { Title } from "@/components/Title";
 import { Advocate } from "@/db/schema";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
@@ -20,14 +22,9 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-    const searchTermElement = document.getElementById("search-term");
-    if (!searchTermElement) throw new Error('unable to find search term element')
-    searchTermElement.innerHTML = searchTerm;
-
+  const handleSearch = (searchTerm: string) => {
     console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
+    const filtered = advocates.filter((advocate) => {
       return (
         advocate.firstName.includes(searchTerm) ||
         advocate.lastName.includes(searchTerm) ||
@@ -38,30 +35,17 @@ export default function Home() {
         advocate.yearsOfExperience.toString().includes(searchTerm)
       );
     });
-
-    setFilteredAdvocates(filteredAdvocates);
+    setFilteredAdvocates(filtered);
   };
 
-  const onClick = () => {
-    console.log(advocates);
+  const handleReset = () => {
     setFilteredAdvocates(advocates);
   };
 
   return (
     <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <br />
-      <br />
+      <Title>Solace Advocates</Title>
+      <SearchBar onSearch={handleSearch} onReset={handleReset} />
       <DataTable<Advocate>
         data={filteredAdvocates}
         columns={[
