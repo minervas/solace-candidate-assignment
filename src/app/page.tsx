@@ -1,5 +1,7 @@
 "use client";
 
+import { DataTable } from "@/components/DataTable";
+import { StringList } from "@/components/StringList";
 import { Advocate } from "@/db/schema";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -59,46 +61,25 @@ export default function Home() {
       </div>
       <br />
       <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              // the key prop helps react to efficiently update the DOM after re-renders e.g. someone updates the filter
-              <tr key={advocate.id}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s, idx) => (
-                    // using the index as a key is only acceptable if 
-                    // the items have no stable IDs, and the list is never reordered, filtered, or otherwise modified
-                    // otherwise you might encounter performance issues and bugs
-
-                    // I think this field would satisfy those conditions, but just in case this would change
-                    // in the future (we allow updating or filter this list for some reason) I'll
-                    // do a compound key of the advocate id and the specialty name
-                    <div key={advocate.id + s}>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <DataTable<Advocate>
+        data={filteredAdvocates}
+        columns={[
+          { header: "First Name", cell: (row) => row.firstName },
+          { header: "Last Name", cell: (row) => row.lastName },
+          { header: "City", cell: (row) => row.city },
+          { header: "Degree", cell: (row) => row.degree },
+          {
+            header: "Specialties",
+            cell: (row) => <StringList items={row.specialties} maxVisible={3} />,
+          },
+          {
+            header: "Years of Experience",
+            cell: (row) => row.yearsOfExperience,
+          },
+          { header: "Phone Number", cell: (row) => row.phoneNumber },
+        ]}
+        getRowKey={(row) => row.id}
+      />
     </main>
   );
 }
