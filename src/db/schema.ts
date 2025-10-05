@@ -21,6 +21,19 @@ const advocates = pgTable("advocates", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
+// extending to make db.execute template type work
+export interface SqlAdvocate extends Record<string, unknown> {
+  id: number;
+  first_name: string;
+  last_name: string;
+  city: string;
+  degree: string;
+  payload: string; // JSONB column
+  years_of_experience: number;
+  phone_number: number;
+  created_at: Date;
+}
+
 export interface Advocate extends Omit<InferSelectModel<typeof advocates>, 'specialties'> { specialties: string[] };
 
 export { advocates };
