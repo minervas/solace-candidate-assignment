@@ -18,7 +18,6 @@ export default function Home() {
   const router = useRouter();
   
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState<PaginationMetadata>({
     page: 1,
     limit: PAGE_SIZE,
@@ -28,6 +27,15 @@ export default function Home() {
     hasPreviousPage: false,
   });
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Derived state: get current page from URL parameters
+  const currentPage = useMemo(() => {
+    const pageParam = searchParams.get("page");
+    if (!pageParam) return 1;
+    
+    const page = parseInt(pageParam, 10);
+    return isNaN(page) || page < 1 ? 1 : page;
+  }, [searchParams]);
 
   // Derived state: filter advocates based on search term
   const filteredAdvocates = useMemo(() => {
@@ -47,31 +55,19 @@ export default function Home() {
     });
   }, [advocates, searchTerm]);
 
-  // Get starting page from URL parameters, default to 1 if invalid
-  const getInitialPage = (): number => {
-    const pageParam = searchParams.get("page");
-    if (!pageParam) return 1;
-    
-    const page = parseInt(pageParam, 10);
-    if (isNaN(page) || page < 1) return 1;
-    
-    return page;
-  };
-
   const fetchAdvocates = (page: number) => {
     fetch(`/api/advocates?page=${page}&limit=${PAGE_SIZE}`)
       .then((response) => response.json())
       .then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
         setPagination(jsonResponse.pagination);
-        setCurrentPage(page);
       });
   };
 
+  // Fetch advocates whenever the current page changes
   useEffect(() => {
-    const initialPage = getInitialPage();
-    fetchAdvocates(initialPage);
-  }, []);
+    fetchAdvocates(currentPage);
+  }, [currentPage]);
 
   // note that this filtering is done client-side (on the current page of data only)
   const handleSearch = (term: string) => {
