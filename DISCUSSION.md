@@ -7,6 +7,35 @@
 - consider showing collapsed specialties in a tool tip
 - I would expect that the number of specialties per person would be reasonably constrained to under 10, but if that's not the case we might need to reconsider how that data is stored an queried
 - consider adding a "fuzzy search" feature https://www.postgresql.org/docs/current/fuzzystrmatch.html
+- add loading placeholder to the table while we are awaiting data (on page load/fetching the next page of data etc)
+- trim leading/trailing whitespace from the search term
+- add column sorting
+- add 404 & internal server error pages
+- consider fetching more than 1 page of data at the start and fetching additional pages in the background as the user pages through data to improve user experience
+- add individual field filtering controls in a ... collapsible filter bar?
+  - with this change we should actually add filtering capabilities to the advocates backend API (which will adjust our postgres query to filter results)
+
+# TODO when productionizing the app:
+- add a sign-in with authn/authz
+- add redirect to sign-in page for protected parts of the site (can be done by wrapping components with a higher-order component that validates auth then conditionally redirects)
+- add a CDN & WAF with rate limiting/DDoS protection
+- add a robots.txt page
+- host under a custom domain
+- add cert rotation for the custom domain
+- create a CI pipeline with unit/integration test checks, lint checks, deployment etc
+- create a strategy for multi-regional deployment
+- create a disaster recovery plan with target recovery objectives
+- define availability/performance requirements
+- project usage patterns to inform scaling requirements
+- create APIs for adding and updating advocates
+- choose what cloud provider(s) you intend to host your application on
+- containerize the application and choose a container orchestration framework (or use serverless)
+- consider what sort of compliance certifications might be relevant for the application (SOC 2, HITRUST, etc)
+- deploy and measure how the app conforms to non-functional requirements
+- perform threat modeling on a regular cadence and prioritize threat mitigations
+- analyze postgres query performance and adust indexes, data types, etc to optimize performance
+- consider adding client or server level caching (consider what type of cache would best fit each scenario and whether or not stale data in the cache is acceptable)
+- create documentation and tutorials for app usage
 
 # Note 
 - I'm using vitest instead of jest as I've found that it is faster and more scalable than jest. I believe it is due to how jest handles barrel files https://dev.to/fogel/potential-issues-with-barrel-files-in-jest-1nkl and other issues with jest memory usage https://www.reddit.com/r/typescript/comments/1i8bpii/crazy_jest_memory_usage/
