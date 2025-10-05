@@ -7,7 +7,7 @@ import { StringList } from "@/components/StringList";
 import { Title } from "@/components/Title";
 import { Advocate } from "@/db/schema";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { PaginationMetadata } from "./api/advocates/route";
 
@@ -18,7 +18,6 @@ export default function Home() {
   const router = useRouter();
   
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState<PaginationMetadata>({
     page: 1,
@@ -29,6 +28,24 @@ export default function Home() {
     hasPreviousPage: false,
   });
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Derived state: filter advocates based on search term
+  const filteredAdvocates = useMemo(() => {
+    if (!searchTerm) return advocates;
+    
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return advocates.filter((advocate) => {
+      return (
+        advocate.firstName.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.lastName.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.city.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.degree.toLowerCase().includes(lowerSearchTerm) ||
+        advocate.specialties.some(value => value.toLowerCase().includes(lowerSearchTerm)) ||
+        advocate.phoneNumber.toString().includes(searchTerm) ||
+        advocate.yearsOfExperience.toString().includes(searchTerm)
+      );
+    });
+  }, [advocates, searchTerm]);
 
   // Get starting page from URL parameters, default to 1 if invalid
   const getInitialPage = (): number => {
@@ -46,7 +63,6 @@ export default function Home() {
       .then((response) => response.json())
       .then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
         setPagination(jsonResponse.pagination);
         setCurrentPage(page);
       });
@@ -60,23 +76,10 @@ export default function Home() {
   // note that this filtering is done client-side (on the current page of data only)
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    const filtered = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.toLowerCase().includes(term.toLowerCase()) ||
-        advocate.lastName.toLowerCase().includes(term.toLowerCase()) ||
-        advocate.city.toLowerCase().includes(term.toLowerCase()) ||
-        advocate.degree.toLowerCase().includes(term.toLowerCase()) ||
-        advocate.specialties.find(value => value.toLowerCase().includes(term.toLowerCase())) ||
-        advocate.phoneNumber.toString().includes(term) ||
-        advocate.yearsOfExperience.toString().includes(term)
-      );
-    });
-    setFilteredAdvocates(filtered);
   };
 
   const handleReset = () => {
     setSearchTerm("");
-    setFilteredAdvocates(advocates);
   };
 
   const handlePageChange = (page: number) => {
