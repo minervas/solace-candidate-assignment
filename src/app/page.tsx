@@ -87,40 +87,44 @@ export default function Home() {
   };
 
   return (
-    <main style={{ margin: "24px" }}>
-      <Title>Solace Advocates</Title>
-      <SearchBar onSearch={handleSearch} onReset={handleReset} />
-      <DataTable<Advocate>
-        data={filteredAdvocates}
-        columns={[
-          { header: "First Name", cell: (row) => row.firstName },
-          { header: "Last Name", cell: (row) => row.lastName },
-          { header: "City", cell: (row) => row.city },
-          { header: "Degree", cell: (row) => row.degree },
-          {
-            header: "Specialties",
-            cell: (row) => <StringList items={row.specialties} maxVisible={3} />,
-          },
-          {
-            header: "Years of Experience",
-            cell: (row) => row.yearsOfExperience,
-          },
-          { 
-            header: "Phone Number", 
-            cell: (row) => formatPhoneNumber(row.phoneNumber) 
-          },
-        ]}
-        getRowKey={(row) => row.id}
-      />
-      {!searchTerm && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={handlePageChange}
-          hasNextPage={pagination.hasNextPage}
-          hasPreviousPage={pagination.hasPreviousPage}
-        />
-      )}
+    <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <Title>Solace Advocates</Title>
+        <SearchBar onSearch={handleSearch} onReset={handleReset} />
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <DataTable<Advocate>
+            data={filteredAdvocates}
+            columns={[
+              { header: "First Name", cell: (row) => row.firstName },
+              { header: "Last Name", cell: (row) => row.lastName },
+              { header: "City", cell: (row) => row.city },
+              { header: "Degree", cell: (row) => row.degree },
+              {
+                header: "Specialties",
+                cell: (row) => <StringList items={row.specialties} maxVisible={3} />,
+              },
+              {
+                header: "Years of Experience",
+                cell: (row) => row.yearsOfExperience,
+              },
+              { 
+                header: "Phone Number", 
+                cell: (row) => formatPhoneNumber(row.phoneNumber) 
+              },
+            ]}
+            getRowKey={(row) => row.id}
+          />
+        </div>
+        {!searchTerm && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={pagination.hasPreviousPage}
+          />
+        )}
+      </div>
     </main>
   );
 }
