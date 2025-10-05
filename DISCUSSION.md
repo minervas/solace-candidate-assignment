@@ -7,7 +7,6 @@
 - consider showing collapsed specialties in a tool tip
 - I would expect that the number of specialties per person would be reasonably constrained to under 10, but if that's not the case we might need to reconsider how that data is stored an queried
 - consider adding a "fuzzy search" feature https://www.postgresql.org/docs/current/fuzzystrmatch.html
-- add loading placeholder to the table while we are awaiting data (on page load/fetching the next page of data etc)
 - trim leading/trailing whitespace from the search term
 - add column sorting
 - add 404 & internal server error pages
