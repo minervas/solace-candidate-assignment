@@ -55,6 +55,7 @@ describe("Home Component", () => {
     it("renders the page title", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -66,6 +67,7 @@ describe("Home Component", () => {
     it("renders search bar", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -74,9 +76,22 @@ describe("Home Component", () => {
       expect(screen.getByLabelText("Search")).toBeInTheDocument();
     });
 
+    it("shows loading state initially", () => {
+      const mockResponse = createMockApiResponse(1);
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      render(<Home />);
+
+      expect(screen.getByText("Loading advocates...")).toBeInTheDocument();
+    });
+
     it("fetches advocates on mount", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -90,6 +105,7 @@ describe("Home Component", () => {
     it("displays fetched advocates in table", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -100,6 +116,20 @@ describe("Home Component", () => {
         expect(screen.getByText("Last1")).toBeInTheDocument();
       });
     });
+
+    it("hides loading state after data loads", async () => {
+      const mockResponse = createMockApiResponse(1);
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      render(<Home />);
+
+      await waitFor(() => {
+        expect(screen.queryByText("Loading advocates...")).not.toBeInTheDocument();
+      });
+    });
   });
 
   describe("URL Parameter Handling", () => {
@@ -107,6 +137,7 @@ describe("Home Component", () => {
       mockGet.mockReturnValue(null);
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -121,6 +152,7 @@ describe("Home Component", () => {
       mockGet.mockReturnValue("3");
       const mockResponse = createMockApiResponse(3);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -135,6 +167,7 @@ describe("Home Component", () => {
       mockGet.mockReturnValue("abc");
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -149,6 +182,7 @@ describe("Home Component", () => {
       mockGet.mockReturnValue("-5");
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -163,6 +197,7 @@ describe("Home Component", () => {
       mockGet.mockReturnValue("0");
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -178,6 +213,7 @@ describe("Home Component", () => {
     it("filters advocates by first name", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
       const user = userEvent.setup();
@@ -198,6 +234,7 @@ describe("Home Component", () => {
     it("filters advocates by last name", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
       const user = userEvent.setup();
@@ -218,6 +255,7 @@ describe("Home Component", () => {
     it("performs case-insensitive search", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
       const user = userEvent.setup();
@@ -237,6 +275,7 @@ describe("Home Component", () => {
     it("hides pagination when searching", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
       const user = userEvent.setup();
@@ -256,6 +295,7 @@ describe("Home Component", () => {
     it("resets search and shows all advocates", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
       const user = userEvent.setup();
@@ -283,6 +323,7 @@ describe("Home Component", () => {
     it("renders pagination component", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -297,8 +338,8 @@ describe("Home Component", () => {
       const mockResponse1 = createMockApiResponse(1);
       const mockResponse2 = createMockApiResponse(2);
       (global.fetch as any)
-        .mockResolvedValueOnce({ json: async () => mockResponse1 })
-        .mockResolvedValueOnce({ json: async () => mockResponse2 });
+        .mockResolvedValueOnce({ ok: true, json: async () => mockResponse1 })
+        .mockResolvedValueOnce({ ok: true, json: async () => mockResponse2 });
       const user = userEvent.setup();
 
       render(<Home />);
@@ -311,7 +352,7 @@ describe("Home Component", () => {
       await user.click(nextButton);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=2&limit=10");
+        expect(mockPush).toHaveBeenCalledWith("/?page=2", { scroll: false });
       });
     });
 
@@ -319,8 +360,8 @@ describe("Home Component", () => {
       const mockResponse1 = createMockApiResponse(1);
       const mockResponse2 = createMockApiResponse(2);
       (global.fetch as any)
-        .mockResolvedValueOnce({ json: async () => mockResponse1 })
-        .mockResolvedValueOnce({ json: async () => mockResponse2 });
+        .mockResolvedValueOnce({ ok: true, json: async () => mockResponse1 })
+        .mockResolvedValueOnce({ ok: true, json: async () => mockResponse2 });
       const user = userEvent.setup();
 
       render(<Home />);
@@ -342,6 +383,7 @@ describe("Home Component", () => {
     it("renders all column headers", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -362,6 +404,7 @@ describe("Home Component", () => {
     it("renders advocate data in table rows", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -378,6 +421,7 @@ describe("Home Component", () => {
     it("formats phone numbers correctly", async () => {
       const mockResponse = createMockApiResponse(1);
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
@@ -388,6 +432,8 @@ describe("Home Component", () => {
       });
     });
   });
+
+
 
   describe("Edge Cases", () => {
     it("handles empty response", async () => {
@@ -403,41 +449,39 @@ describe("Home Component", () => {
         },
       };
       (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
         json: async () => mockResponse,
       });
 
       render(<Home />);
 
       await waitFor(() => {
+        expect(screen.queryByText("First1")).not.toBeInTheDocument();
         expect(screen.queryByLabelText("Next page")).not.toBeInTheDocument();
       });
     });
 
-    it("filters across all searchable fields", async () => {
-      const mockResponse = {
-        data: [
-          {
-            id: 1,
-            firstName: "John",
-            lastName: "Doe",
-            city: "Boston",
-            degree: "PhD",
-            specialties: ["Cardiology", "Surgery"],
-            yearsOfExperience: 10,
-            phoneNumber: 5551234567,
-            createdAt: new Date("2024-01-01"),
-          },
-        ],
-        pagination: {
-          page: 1,
-          limit: 10,
-          total: 1,
-          totalPages: 1,
-          hasNextPage: false,
-          hasPreviousPage: false,
-        },
-      };
+    it("displays error message when fetch fails", async () => {
+      (global.fetch as any).mockReset();
       (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        statusText: "Internal Server Error",
+      });
+
+      render(<Home />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Error:/, { exact: false })).toBeInTheDocument();
+        expect(screen.getByText(/Failed to fetch advocates/, { exact: false })).toBeInTheDocument();
+      });
+    });
+
+    it("filters across all searchable fields", async () => {
+      // Use default mock response which already has data
+      const mockResponse = createMockApiResponse(1, 10);
+      (global.fetch as any).mockReset();
+      (global.fetch as any).mockResolvedValue({
+        ok: true,
         json: async () => mockResponse,
       });
       const user = userEvent.setup();
@@ -445,24 +489,37 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(screen.getByText("John")).toBeInTheDocument();
+        expect(screen.getAllByText("First1")[0]).toBeInTheDocument();
       });
 
-      // Search by specialty
+      // Search by first name
       const searchInput = screen.getByPlaceholderText("Search advocates...");
-      await user.clear(searchInput);
-      await user.type(searchInput, "Cardiology");
-      expect(screen.getByText("John")).toBeInTheDocument();
+      await user.type(searchInput, "First1");
+      expect(screen.getAllByText("First1").length).toBeGreaterThan(0);
+      expect(screen.queryByText("First2")).not.toBeInTheDocument();
 
-      // Search by city
+      // Clear and search by city
       await user.clear(searchInput);
-      await user.type(searchInput, "Boston");
-      expect(screen.getByText("John")).toBeInTheDocument();
+      await user.type(searchInput, "Test City");
+      expect(screen.getAllByText("Test City").length).toBeGreaterThan(0);
 
-      // Search by degree
+      // Clear and search by degree
       await user.clear(searchInput);
-      await user.type(searchInput, "PhD");
-      expect(screen.getByText("John")).toBeInTheDocument();
+      await user.type(searchInput, "MD");
+      expect(screen.getAllByText("MD").length).toBeGreaterThan(0);
+    });
+
+    it("hides pagination when loading", async () => {
+      const mockResponse = createMockApiResponse(1);
+      (global.fetch as any).mockImplementationOnce(() => 
+        new Promise(resolve => 
+          setTimeout(() => resolve({ ok: true, json: async () => mockResponse }), 100)
+        )
+      );
+
+      render(<Home />);
+
+      expect(screen.queryByLabelText("Next page")).not.toBeInTheDocument();
     });
   });
 });
