@@ -98,7 +98,10 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=1&limit=10");
+        expect(global.fetch).toHaveBeenCalledWith(
+          "/api/advocates?page=1&limit=10",
+          expect.objectContaining({ signal: expect.any(AbortSignal) })
+        );
       });
     });
 
@@ -144,7 +147,10 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=1&limit=10");
+        expect(global.fetch).toHaveBeenCalledWith(
+          "/api/advocates?page=1&limit=10",
+          expect.objectContaining({ signal: expect.any(AbortSignal) })
+        );
       });
     });
 
@@ -159,7 +165,10 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=3&limit=10");
+        expect(global.fetch).toHaveBeenCalledWith(
+          "/api/advocates?page=3&limit=10",
+          expect.objectContaining({ signal: expect.any(AbortSignal) })
+        );
       });
     });
 
@@ -174,7 +183,10 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=1&limit=10");
+        expect(global.fetch).toHaveBeenCalledWith(
+          "/api/advocates?page=1&limit=10",
+          expect.objectContaining({ signal: expect.any(AbortSignal) })
+        );
       });
     });
 
@@ -189,7 +201,10 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=1&limit=10");
+        expect(global.fetch).toHaveBeenCalledWith(
+          "/api/advocates?page=1&limit=10",
+          expect.objectContaining({ signal: expect.any(AbortSignal) })
+        );
       });
     });
 
@@ -204,7 +219,10 @@ describe("Home Component", () => {
       render(<Home />);
 
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/advocates?page=1&limit=10");
+        expect(global.fetch).toHaveBeenCalledWith(
+          "/api/advocates?page=1&limit=10",
+          expect.objectContaining({ signal: expect.any(AbortSignal) })
+        );
       });
     });
   });

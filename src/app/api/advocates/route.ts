@@ -47,7 +47,6 @@ export async function GET(request: Request): Promise<Response> {
   `);
 
   const pageOfData = results.map(({ total_count, ...row }) => mapSqlAdvocateToAdvocate(row));
-  console.log(pageOfData)
   const total = results.length > 0 ? Number(results[0].total_count) : 0;
   const totalPages = Math.ceil(total / limit);
 
