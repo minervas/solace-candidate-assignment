@@ -7,7 +7,7 @@ import { StringList } from "@/components/StringList";
 import { Title } from "@/components/Title";
 import { Advocate } from "@/db/schema";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { PaginationMetadata } from "./api/advocates/route";
 
@@ -29,9 +29,6 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Track the latest fetch request to prevent race conditions
-  const latestFetchRef = useRef(0);
 
   // Derived state: get current page from URL parameters
   const currentPage = useMemo(() => {
@@ -60,30 +57,33 @@ export default function Home() {
     });
   }, [advocates, searchTerm]);
 
-  const fetchAdvocates = async (page: number) => {
-    // Increment and store the fetch ID for this request
-    const fetchId = ++latestFetchRef.current;
+  // Fetch advocates whenever the current page changes
+  useEffect(() => {
+    const abortController = new AbortController();
     
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`/api/advocates?page=${page}&limit=${PAGE_SIZE}`);
+    const fetchAdvocates = async () => {
+      setIsLoading(true);
+      setError(null);
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch advocates: ${response.statusText}`);
-      }
-      
-      const jsonResponse = await response.json();
-      
-      // Only update state if this is still the latest fetch request
-      if (fetchId === latestFetchRef.current) {
+      try {
+        const response = await fetch(
+          `/api/advocates?page=${currentPage}&limit=${PAGE_SIZE}`,
+          { signal: abortController.signal }
+        );
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch advocates: ${response.statusText}`);
+        }
+        
+        const jsonResponse = await response.json();
         setAdvocates(jsonResponse.data);
         setPagination(jsonResponse.pagination);
-      }
-    } catch (err) {
-      // Only update error state if this is still the latest fetch request
-      if (fetchId === latestFetchRef.current) {
+      } catch (err) {
+        // Ignore abort errors - they're expected when component unmounts or page changes
+        if (err instanceof Error && err.name === 'AbortError') {
+          return;
+        }
+        
         setError(err instanceof Error ? err.message : "An error occurred");
         setAdvocates([]);
         setPagination({
@@ -94,40 +94,54 @@ export default function Home() {
           hasNextPage: false,
           hasPreviousPage: false,
         });
+      } finally {
+        // Only update loading state if the request wasn't aborted
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
       }
-    } finally {
-      // Only update loading state if this is still the latest fetch request
-      if (fetchId === latestFetchRef.current) {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  // Fetch advocates whenever the current page changes
-  useEffect(() => {
-    fetchAdvocates(currentPage);
+    };
     
-    // Cleanup: increment the ref so any pending fetches are ignored
+    fetchAdvocates();
+    
+    // Cleanup: abort the fetch request if component unmounts or currentPage changes
     return () => {
-      latestFetchRef.current++;
+      abortController.abort();
     };
   }, [currentPage]);
 
   // note that this filtering is done client-side (on the current page of data only)
-  const handleSearch = (term: string) => {
+  const handleSearch = useCallback((term: string) => {
     setSearchTerm(term);
-  };
+  }, []);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setSearchTerm("");
-  };
+  }, []);
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     // Update URL - this will trigger useEffect which calls fetchAdvocates
     router.push(`/?page=${page}`, { scroll: false });
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+  }, [router]);
+  const columns = useMemo(() => [
+    { header: "First Name", cell: (row: Advocate) => row.firstName },
+    { header: "Last Name", cell: (row: Advocate) => row.lastName },
+    { header: "City", cell: (row: Advocate) => row.city },
+    { header: "Degree", cell: (row: Advocate) => row.degree },
+    {
+      header: "Specialties",
+      cell: (row: Advocate) => <StringList items={row.specialties} maxVisible={3} />,
+    },
+    {
+      header: "Years of Experience",
+      cell: (row: Advocate) => row.yearsOfExperience,
+    },
+    { 
+      header: "Phone Number", 
+      cell: (row: Advocate) => formatPhoneNumber(row.phoneNumber) 
+    },
+  ], []);
   return (
     <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -149,24 +163,7 @@ export default function Home() {
           ) : (
             <DataTable<Advocate>
               data={filteredAdvocates}
-              columns={[
-                { header: "First Name", cell: (row) => row.firstName },
-                { header: "Last Name", cell: (row) => row.lastName },
-                { header: "City", cell: (row) => row.city },
-                { header: "Degree", cell: (row) => row.degree },
-                {
-                  header: "Specialties",
-                  cell: (row) => <StringList items={row.specialties} maxVisible={3} />,
-                },
-                {
-                  header: "Years of Experience",
-                  cell: (row) => row.yearsOfExperience,
-                },
-                { 
-                  header: "Phone Number", 
-                  cell: (row) => formatPhoneNumber(row.phoneNumber) 
-                },
-              ]}
+              columns={columns}
               getRowKey={(row) => row.id}
             />
           )}
