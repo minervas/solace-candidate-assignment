@@ -35,6 +35,9 @@
 - analyze postgres query performance and adust indexes, data types, etc to optimize performance
 - consider adding client or server level caching (consider what type of cache would best fit each scenario and whether or not stale data in the cache is acceptable)
 - create documentation and tutorials for app usage
+- improve logging
+- add correlation/trace ids to requests to improve observability
+- add app analytics to better track usage and usability
 
 # Note 
 - I'm using vitest instead of jest as I've found that it is faster and more scalable than jest. I believe it is due to how jest handles barrel files https://dev.to/fogel/potential-issues-with-barrel-files-in-jest-1nkl and other issues with jest memory usage https://www.reddit.com/r/typescript/comments/1i8bpii/crazy_jest_memory_usage/

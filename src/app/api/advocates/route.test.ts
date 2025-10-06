@@ -147,7 +147,9 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid page parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid page parameter");
+      expect(data.message).toBe("Page must be a positive integer");
     });
 
     it("rejects invalid page parameter (zero)", async () => {
@@ -155,7 +157,9 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid page parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid page parameter");
+      expect(data.message).toBe("Page must be a positive integer");
     });
 
     it("rejects invalid page parameter (NaN)", async () => {
@@ -163,7 +167,9 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid page parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid page parameter");
+      expect(data.message).toBe("Page must be a positive integer");
     });
 
     it("rejects invalid limit parameter (negative)", async () => {
@@ -171,7 +177,8 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid limit parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid limit parameter. Must be between 1 and 100");
     });
 
     it("rejects invalid limit parameter (zero)", async () => {
@@ -179,7 +186,8 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid limit parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid limit parameter. Must be between 1 and 100");
     });
 
     it("rejects limit parameter above 100", async () => {
@@ -187,7 +195,8 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid limit parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid limit parameter. Must be between 1 and 100");
     });
 
     it("rejects invalid limit parameter (NaN)", async () => {
@@ -195,7 +204,8 @@ describe("GET /api/advocates", () => {
       const response = await GET(request);
 
       expect(response.status).toBe(400);
-      expect(await response.text()).toBe("Invalid limit parameter");
+      const data = await response.json();
+      expect(data.error).toBe("Invalid limit parameter. Must be between 1 and 100");
     });
 
     it("accepts limit of 1", async () => {
@@ -244,6 +254,19 @@ describe("GET /api/advocates", () => {
           createdAt: new Date("2024-01-01").toISOString(),
         });
       });
+    });
+  });
+
+  describe("Error handling", () => {
+    it("handles database errors gracefully", async () => {
+      mockExecute.mockRejectedValueOnce(new Error("Database connection failed"));
+
+      const request = new Request("http://localhost:3000/api/advocates");
+      const response = await GET(request);
+
+      expect(response.status).toBe(500);
+      const data = await response.json();
+      expect(data.error).toBe("Failed to fetch advocates");
     });
   });
 });
