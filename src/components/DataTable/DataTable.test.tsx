@@ -7,8 +7,8 @@ describe('DataTable', () => {
   describe('Basic Rendering', () => {
     it('renders table with headers', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
       ];
       const data: Advocate[] = [];
 
@@ -21,9 +21,9 @@ describe('DataTable', () => {
 
     it('renders correct number of column headers', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
-        { header: 'Degree', cell: (row) => row.degree },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
+        { header: 'Degree', cell: (row) => row.degree, id: 'degree' },
       ];
       const data: Advocate[] = [];
 
@@ -35,7 +35,7 @@ describe('DataTable', () => {
 
     it('applies custom className to wrapper div', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
       ];
       const data: Advocate[] = [];
 
@@ -56,8 +56,8 @@ describe('DataTable', () => {
   describe('Empty State', () => {
     it('displays "No data available" when data array is empty', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
       ];
       const data: Advocate[] = [];
 
@@ -68,9 +68,9 @@ describe('DataTable', () => {
 
     it('empty state spans all columns', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
-        { header: 'Degree', cell: (row) => row.degree },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
+        { header: 'Degree', cell: (row) => row.degree, id: 'degree' },
       ];
       const data: Advocate[] = [];
 
@@ -84,8 +84,8 @@ describe('DataTable', () => {
   describe('Data Rendering', () => {
     it('renders all rows of data', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: ['Family Law'], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -102,8 +102,8 @@ describe('DataTable', () => {
 
     it('renders cell data correctly', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: ['Family Law'], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -117,7 +117,7 @@ describe('DataTable', () => {
 
     it('uses getRowKey for row keys', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: ['Family Law'], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -141,6 +141,7 @@ describe('DataTable', () => {
         {
           header: 'First Name',
           cell: (row) => <strong>{row.firstName.toUpperCase()}</strong>,
+          id: 'firstName',
         },
       ];
       const data: Advocate[] = [
@@ -163,6 +164,7 @@ describe('DataTable', () => {
               <span> - {row.degree}</span>
             </div>
           ),
+          id: 'advocateDetails',
         },
       ];
       const data: Advocate[] = [
@@ -177,7 +179,7 @@ describe('DataTable', () => {
 
     it('renders numeric values correctly', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'Years of Experience', cell: (row) => row.yearsOfExperience },
+        { header: 'Years of Experience', cell: (row) => row.yearsOfExperience, id: 'yearsOfExperience' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: ['Family Law'], yearsOfExperience: 15, phoneNumber: 1234567890, createdAt: null },
@@ -193,6 +195,7 @@ describe('DataTable', () => {
         {
           header: 'Specialties',
           cell: (row) => row.specialties.join(', '),
+          id: 'specialties',
         },
       ];
       const data: Advocate[] = [
@@ -210,10 +213,10 @@ describe('DataTable', () => {
   describe('Multiple Columns', () => {
     it('renders multiple columns with correct data', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'ID', cell: (row) => row.id },
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
-        { header: 'Years of Experience', cell: (row) => row.yearsOfExperience },
+        { header: 'ID', cell: (row) => row.id, id: 'id' },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
+        { header: 'Years of Experience', cell: (row) => row.yearsOfExperience, id: 'yearsOfExperience' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: ['Family Law'], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -236,9 +239,9 @@ describe('DataTable', () => {
 
     it('renders correct number of cells per row', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
-        { header: 'Degree', cell: (row) => row.degree },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
+        { header: 'Degree', cell: (row) => row.degree, id: 'degree' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: ['Family Law'], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -257,8 +260,8 @@ describe('DataTable', () => {
   describe('Large Datasets', () => {
     it('handles large datasets efficiently', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
-        { header: 'City', cell: (row) => row.city },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
+        { header: 'City', cell: (row) => row.city, id: 'city' },
       ];
       const data: Advocate[] = Array.from({ length: 100 }, (_, i) => ({
         id: i + 1,
@@ -282,7 +285,7 @@ describe('DataTable', () => {
   describe('Edge Cases', () => {
     it('handles empty string values', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'City', cell: (row) => row.city || 'N/A' },
+        { header: 'City', cell: (row) => row.city || 'N/A', id: 'city' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: '', degree: 'JD', specialties: [], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -299,7 +302,7 @@ describe('DataTable', () => {
       }
 
       const columns: Column<NullableAdvocate>[] = [
-        { header: 'Created At', cell: (row) => row.createdAt?.toISOString() ?? 'Unknown' },
+        { header: 'Created At', cell: (row) => row.createdAt?.toISOString() ?? 'Unknown', id: 'createdAt' },
       ];
       const data: NullableAdvocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: [], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -312,7 +315,7 @@ describe('DataTable', () => {
 
     it('handles numeric IDs as keys', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
       ];
       const data: Advocate[] = [
         { id: 123, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: [], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -327,7 +330,7 @@ describe('DataTable', () => {
 
     it('handles alternative key selectors', () => {
       const columns: Column<Advocate>[] = [
-        { header: 'First Name', cell: (row) => row.firstName },
+        { header: 'First Name', cell: (row) => row.firstName, id: 'firstName' },
       ];
       const data: Advocate[] = [
         { id: 1, firstName: 'John', lastName: 'Doe', city: 'Boston', degree: 'JD', specialties: [], yearsOfExperience: 10, phoneNumber: 1234567890, createdAt: null },
@@ -347,14 +350,17 @@ describe('DataTable', () => {
         {
           header: 'Full Name',
           cell: (row) => `${row.firstName} ${row.lastName}`,
+          id: 'fullName',
         },
         {
           header: 'Location & Degree',
           cell: (row) => `${row.city} - ${row.degree}`,
+          id: 'locationDegree',
         },
         {
           header: 'Specialties Count',
           cell: (row) => row.specialties.length,
+          id: 'specialtiesCount',
         },
       ];
       const data: Advocate[] = [
