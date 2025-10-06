@@ -125,21 +125,24 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [router]);
   const columns = useMemo(() => [
-    { header: "First Name", cell: (row: Advocate) => row.firstName },
-    { header: "Last Name", cell: (row: Advocate) => row.lastName },
-    { header: "City", cell: (row: Advocate) => row.city },
-    { header: "Degree", cell: (row: Advocate) => row.degree },
+    { header: "First Name", cell: (row: Advocate) => row.firstName, id: "firstName" },
+    { header: "Last Name", cell: (row: Advocate) => row.lastName, id: "lastName" },
+    { header: "City", cell: (row: Advocate) => row.city, id: "city" },
+    { header: "Degree", cell: (row: Advocate) => row.degree, id: "degree" },
     {
       header: "Specialties",
       cell: (row: Advocate) => <StringList items={row.specialties} maxVisible={3} />,
+      id: "specialties",
     },
     {
       header: "Years of Experience",
       cell: (row: Advocate) => row.yearsOfExperience,
+      id: "yearsOfExperience",
     },
     { 
       header: "Phone Number", 
-      cell: (row: Advocate) => formatPhoneNumber(row.phoneNumber) 
+      cell: (row: Advocate) => formatPhoneNumber(row.phoneNumber),
+      id: "phoneNumber",
     },
   ], []);
   return (
