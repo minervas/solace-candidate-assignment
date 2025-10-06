@@ -13,6 +13,7 @@
 - consider fetching more than 1 page of data at the start and fetching additional pages in the background as the user pages through data to improve user experience
 - add individual field filtering controls in a ... collapsible filter bar?
   - with this change we should actually add filtering capabilities to the advocates backend API (which will adjust our postgres query to filter results)
+- continue optimizing other components with memoization, etc.
 
 # TODO when productionizing the app:
 - add a sign-in with authn/authz
